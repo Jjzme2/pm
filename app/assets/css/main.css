@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* Tiptap editor styles */
+.tiptap-editor .ProseMirror {
+  outline: none;
+  min-height: 200px;
+}
+
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: theme('colors.zinc.400');
+  pointer-events: none;
+  height: 0;
+}
+
+.dark .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  color: theme('colors.zinc.600');
+}
+
+.tiptap-editor .ProseMirror h1 { @apply text-2xl font-bold mb-2 mt-4; }
+.tiptap-editor .ProseMirror h2 { @apply text-xl font-semibold mb-2 mt-3; }
+.tiptap-editor .ProseMirror h3 { @apply text-lg font-medium mb-1 mt-3; }
+.tiptap-editor .ProseMirror p { @apply mb-2 leading-relaxed; }
+.tiptap-editor .ProseMirror ul { @apply list-disc pl-5 mb-2; }
+.tiptap-editor .ProseMirror ol { @apply list-decimal pl-5 mb-2; }
+.tiptap-editor .ProseMirror li { @apply mb-0.5; }
+.tiptap-editor .ProseMirror blockquote { @apply border-l-4 border-zinc-300 dark:border-zinc-600 pl-4 italic my-2; }
+.tiptap-editor .ProseMirror code { @apply bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-sm font-mono; }
+.tiptap-editor .ProseMirror pre { @apply bg-zinc-100 dark:bg-zinc-800 p-3 rounded-lg mb-2 overflow-x-auto; }
+.tiptap-editor .ProseMirror pre code { @apply bg-transparent p-0; }
+.tiptap-editor .ProseMirror hr { @apply border-zinc-200 dark:border-zinc-700 my-4; }
+.tiptap-editor .ProseMirror a { @apply text-violet-500 underline; }
+.tiptap-editor .ProseMirror mark { @apply bg-yellow-200 dark:bg-yellow-900/50 px-0.5 rounded; }
+.tiptap-editor .ProseMirror u { @apply underline; }
+.tiptap-editor .ProseMirror strong { @apply font-bold; }
+.tiptap-editor .ProseMirror em { @apply italic; }
+
+/* Task list */
+.tiptap-editor .ProseMirror ul[data-type="taskList"] { @apply list-none pl-0; }
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li { @apply flex items-start gap-2 mb-1; }
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li > label { @apply flex-shrink-0 mt-0.5; }
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li > div { @apply flex-1; }
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div { @apply line-through text-zinc-400; }
+
+/* Kanban drag states */
+.kanban-ghost { @apply opacity-40; }
+.kanban-drag { @apply rotate-1 scale-105 shadow-xl; }
+
+/* Scrollbar thin */
+.scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { @apply bg-transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { @apply bg-zinc-300 dark:bg-zinc-700 rounded-full; }

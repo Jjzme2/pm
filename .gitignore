@@ -1,0 +1,19 @@
+# Nuxt
+.nuxt
+.output
+.vercel
+
+# Node
+node_modules
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Editor
+.DS_Store
+.vscode
