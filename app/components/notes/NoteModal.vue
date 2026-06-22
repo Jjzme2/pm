@@ -24,6 +24,9 @@ const form = reactive({
   tags: [] as string[]
 })
 
+const open = ref(true)
+watch(open, (val) => { if (!val) emit('close') })
+
 const tagInput = ref('')
 const loading = ref(false)
 
@@ -80,9 +83,9 @@ async function save() {
 
 <template>
   <UModal
+    v-model:open="open"
     :title="isEditing ? 'Edit Note' : 'New Note'"
     fullscreen
-    @close="emit('close')"
   >
     <template #body>
       <div class="flex flex-col h-full gap-3">

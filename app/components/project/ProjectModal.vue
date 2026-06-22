@@ -18,6 +18,9 @@ const form = reactive({
   status: 'active' as ProjectStatus
 })
 
+const open = ref(true)
+watch(open, (val) => { if (!val) emit('close') })
+
 const loading = ref(false)
 
 watch(() => props.project, (project) => {
@@ -76,7 +79,7 @@ const iconBg = computed(() => {
 </script>
 
 <template>
-  <UModal :title="isEditing ? 'Edit Project' : 'New Project'" @close="emit('close')">
+  <UModal v-model:open="open" :title="isEditing ? 'Edit Project' : 'New Project'">
     <template #body>
       <div class="space-y-5">
         <!-- Preview -->

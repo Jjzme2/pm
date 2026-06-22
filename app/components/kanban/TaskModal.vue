@@ -29,6 +29,9 @@ const form = reactive({
   checklist: [] as ChecklistItem[]
 })
 
+const open = ref(true)
+watch(open, (val) => { if (!val) emit('close') })
+
 const tagInput = ref('')
 const checklistInput = ref('')
 const loading = ref(false)
@@ -124,7 +127,7 @@ const statusOptions = TASK_COLUMNS.map(c => ({ label: c.label, value: c.id }))
 </script>
 
 <template>
-  <UModal :title="isEditing ? 'Edit Task' : 'New Task'" @close="emit('close')">
+  <UModal v-model:open="open" :title="isEditing ? 'Edit Task' : 'New Task'">
     <template #body>
       <div class="space-y-4">
         <UFormField label="Title">

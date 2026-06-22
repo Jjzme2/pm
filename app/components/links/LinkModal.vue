@@ -26,6 +26,9 @@ const form = reactive({
   color: 'violet' as ProjectColor
 })
 
+const open = ref(true)
+watch(open, (val) => { if (!val) emit('close') })
+
 const loading = ref(false)
 
 watch(() => props.link, (link) => {
@@ -64,7 +67,7 @@ async function save() {
 </script>
 
 <template>
-  <UModal :title="isEditing ? 'Edit Link' : 'Add Quick Link'" @close="emit('close')">
+  <UModal v-model:open="open" :title="isEditing ? 'Edit Link' : 'Add Quick Link'">
     <template #body>
       <div class="space-y-4">
         <UFormField label="Title" required>
