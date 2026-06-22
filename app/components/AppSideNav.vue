@@ -67,7 +67,7 @@ const isActive = (path: string) => {
       </ul>
 
       <!-- Projects section -->
-      <div v-if="projects && projects.length" class="mt-4">
+      <div class="mt-4">
         <div class="flex items-center justify-between px-3 py-1">
           <p class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Projects</p>
           <button
@@ -78,7 +78,7 @@ const isActive = (path: string) => {
             <UIcon name="i-lucide-plus" class="size-3.5" />
           </button>
         </div>
-        <ul class="mt-1 space-y-0.5">
+        <ul v-if="projects && projects.length" class="mt-1 space-y-0.5">
           <li v-for="project in projects" :key="project.id">
             <NuxtLink
               :to="`/projects/${project.id}`"
