@@ -13,8 +13,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!user.value) {
     const config = useRuntimeConfig()
-    const redirect = encodeURIComponent(window.location.origin + to.fullPath)
-    const hubLogin = `${config.public.hubUrl}/auth/login?redirect=${redirect}`
-    return navigateTo(hubLogin, { external: true })
+    const callback = encodeURIComponent(`${window.location.origin}/auth/callback`)
+    const redirect = encodeURIComponent(to.fullPath)
+    return navigateTo(
+      `${config.public.hubUrl}/auth/login?callback=${callback}&redirect=${redirect}`,
+      { external: true }
+    )
   }
 })

@@ -1,16 +1,120 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
+useSeoMeta({ title: 'Sign In — ILYTAT PM' })
 
-const config = useRuntimeConfig()
+const { loginWithEmail, loginWithGoogle } = useAuth()
+const route = useRoute()
 
-onMounted(() => {
-  window.location.href = `${config.public.hubUrl}/auth/login`
-})
+const form = reactive({ email: '', password: '' })
+const loading = ref(false)
+const error = ref('')
+
+function getRedirect() {
+  const raw = route.query.redirect as string | undefined
+  if (!raw) return '/'
+  try {
+    const decoded = decodeURIComponent(raw)
+    if (decoded.startsWith('/') && !decoded.startsWith('//')) return decoded
+  } catch {}
+  return '/'
+}
+
+async function handleEmailLogin() {
+  error.value = ''
+  loading.value = true
+  try {
+    await loginWithEmail(form.email, form.password)
+    await navigateTo(getRedirect())
+  } catch (e: any) {
+    error.value = friendlyError(e.code)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function handleGoogleLogin() {
+  error.value = ''
+  loading.value = true
+  try {
+    await loginWithGoogle()
+    await navigateTo(getRedirect())
+  } catch (e: any) {
+    error.value = e.message || 'Google sign-in failed'
+  } finally {
+    loading.value = false
+  }
+}
+
+function friendlyError(code: string) {
+  const map: Record<string, string> = {
+    'auth/user-not-found': 'No account found with this email',
+    'auth/wrong-password': 'Incorrect password',
+    'auth/invalid-credential': 'Invalid email or password',
+    'auth/too-many-requests': 'Too many attempts — try again later',
+    'auth/user-disabled': 'This account has been disabled'
+  }
+  return map[code] || 'Sign in failed. Please try again.'
+}
 </script>
 
 <template>
-  <div class="text-center">
-    <UIcon name="i-lucide-loader-circle" class="size-8 text-violet-500 animate-spin mx-auto mb-3" />
-    <p class="text-sm text-zinc-500">Redirecting to ILYTAT Suite…</p>
-  </div>
+  <UContainer class="py-24 max-w-sm mx-auto">
+    <div class="flex flex-col items-center gap-4 text-center mb-8">
+      <div class="p-4 rounded-2xl bg-elevated ring ring-default">
+        <UIcon name="i-lucide-layout-kanban" class="size-8 text-primary" />
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold">Sign In</h1>
+        <p class="text-muted mt-1 text-sm">Access the ILYTAT Project Manager.</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <UAlert v-if="error" color="error" variant="subtle" :description="error" />
+
+      <UFormField label="Email">
+        <UInput
+          v-model="form.email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          @keyup.enter="handleEmailLogin"
+        />
+      </UFormField>
+
+      <UFormField label="Password">
+        <UInput
+          v-model="form.password"
+          type="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          @keyup.enter="handleEmailLogin"
+        />
+      </UFormField>
+
+      <UButton
+        label="Sign In"
+        block
+        :loading="loading"
+        :disabled="!form.email || !form.password"
+        @click="handleEmailLogin"
+      />
+
+      <div class="relative flex items-center gap-3 py-1">
+        <div class="flex-1 border-t border-default" />
+        <span class="text-xs text-muted">or</span>
+        <div class="flex-1 border-t border-default" />
+      </div>
+
+      <UButton
+        icon="i-simple-icons-google"
+        label="Continue with Google"
+        color="neutral"
+        variant="outline"
+        block
+        :loading="loading"
+        @click="handleGoogleLogin"
+      />
+    </div>
+  </UContainer>
 </template>
