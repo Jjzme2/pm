@@ -1,5 +1,33 @@
 import type { Timestamp } from 'firebase/firestore'
 
+export type SuiteEventType =
+  | 'task.created'
+  | 'task.completed'
+  | 'project.created'
+  | 'project.completed'
+  | 'timer.stopped'
+  | 'note.created'
+
+export interface ActivityEvent {
+  id: string
+  type: SuiteEventType
+  source: 'pm' | 'hub'
+  summary: string
+  data: Record<string, unknown>
+  createdAt: Timestamp
+}
+
+export interface SuiteNotification {
+  id: string
+  type: SuiteEventType
+  source: 'pm' | 'hub'
+  title: string
+  body: string
+  data: Record<string, unknown>
+  read: boolean
+  createdAt: Timestamp
+}
+
 export type ProjectColor =
   | 'violet' | 'red' | 'orange' | 'amber' | 'yellow'
   | 'lime' | 'green' | 'emerald' | 'teal' | 'cyan'

@@ -15,6 +15,7 @@ import type { Project, ProjectColor, ProjectStatus } from '~/types'
 export function useProjects() {
   const db = useFirestore()
   const user = useCurrentUser()
+  const { emitActivity, emitNotification } = useSuiteEvents()
 
   function projectsRef() {
     return collection(db, 'users', user.value!.uid, 'pm_projects')
@@ -42,6 +43,7 @@ export function useProjects() {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     })
+    emitActivity('project.created', `Created project "${data.name}"`, { name: data.name })
   }
 
   async function updateProject(id: string, data: Partial<Omit<Project, 'id' | 'createdAt'>>) {
@@ -49,6 +51,12 @@ export function useProjects() {
       ...data,
       updatedAt: serverTimestamp()
     })
+    if (data.status === 'completed') {
+      const project = projects.value?.find(p => p.id === id)
+      const name = project?.name ?? data.name ?? 'Project'
+      emitActivity('project.completed', `Completed project "${name}"`, { projectId: id, name })
+      emitNotification('project.completed', 'Project completed', `"${name}" has been marked complete.`, { projectId: id })
+    }
   }
 
   async function deleteProject(id: string) {

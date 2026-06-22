@@ -16,6 +16,7 @@ import type { Task, TaskStatus, TaskPriority, ChecklistItem } from '~/types'
 export function useTasks(projectId: MaybeRef<string>) {
   const db = useFirestore()
   const user = useCurrentUser()
+  const { emitActivity, emitNotification } = useSuiteEvents()
 
   function tasksRef() {
     return collection(db, 'users', user.value!.uid, 'pm_tasks')
@@ -69,6 +70,7 @@ export function useTasks(projectId: MaybeRef<string>) {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     })
+    emitActivity('task.created', `Created task "${data.title}"`, { projectId: pid, title: data.title })
   }
 
   async function updateTask(id: string, data: Partial<Omit<Task, 'id' | 'projectId' | 'createdAt'>>) {
@@ -81,6 +83,12 @@ export function useTasks(projectId: MaybeRef<string>) {
   async function moveTask(taskId: string, newStatus: TaskStatus) {
     const statusTasks = (tasks.value ?? []).filter(t => t.status === newStatus && t.id !== taskId)
     await updateTask(taskId, { status: newStatus, order: statusTasks.length })
+    if (newStatus === 'done') {
+      const task = tasks.value?.find(t => t.id === taskId)
+      const title = task?.title ?? 'Task'
+      emitActivity('task.completed', `Completed "${title}"`, { taskId, projectId: toValue(projectId), title })
+      emitNotification('task.completed', 'Task completed', `"${title}" has been marked done.`, { taskId })
+    }
   }
 
   async function deleteTask(id: string) {

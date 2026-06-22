@@ -17,6 +17,7 @@ export function useTimers(projectId?: MaybeRef<string | null>) {
   const db = useFirestore()
   const user = useCurrentUser()
   const timerStore = useTimerStore()
+  const { emitActivity } = useSuiteEvents()
 
   function sessionsRef() {
     return collection(db, 'users', user.value!.uid, 'pm_timers')
@@ -73,6 +74,12 @@ export function useTimers(projectId?: MaybeRef<string | null>) {
       endTime: Timestamp.now(),
       duration
     })
+    const minutes = Math.round(duration / 60000)
+    emitActivity(
+      'timer.stopped',
+      `Logged ${minutes}m — ${snapshot.label}`,
+      { sessionId: snapshot.id, projectId: snapshot.projectId, taskId: snapshot.taskId, duration, label: snapshot.label }
+    )
   }
 
   async function deleteSession(id: string) {
