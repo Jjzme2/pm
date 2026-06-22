@@ -11,7 +11,7 @@ const project = computed(() => projects.value?.find(p => p.id === projectId.valu
 <template>
   <div class="flex flex-col h-full">
     <!-- Project header -->
-    <div class="flex-shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3">
+    <div class="shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3">
       <div v-if="project" class="flex items-center gap-3">
         <UIcon :name="project.icon || 'i-lucide-folder'" class="size-5 text-violet-500" />
         <div>
@@ -27,6 +27,7 @@ const project = computed(() => projects.value?.find(p => p.id === projectId.valu
         <NuxtLink
           v-for="tab in [
             { label: 'Board', icon: 'i-lucide-layout-dashboard', to: `/projects/${projectId}` },
+            { label: 'List', icon: 'i-lucide-list', to: `/projects/${projectId}/list` },
             { label: 'Notes', icon: 'i-lucide-notebook-pen', to: `/projects/${projectId}/notes` },
             { label: 'Timers', icon: 'i-lucide-timer', to: `/projects/${projectId}/timers` },
             { label: 'Links', icon: 'i-lucide-link', to: `/projects/${projectId}/links` }

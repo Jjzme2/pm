@@ -4,6 +4,9 @@ definePageMeta({ middleware: 'auth' })
 const user = useCurrentUser()
 const { projects } = useProjects()
 const timerStore = useTimerStore()
+const { openTasks } = useAllTasks()
+const { notes } = useNotes()
+const { sessions } = useTimers()
 
 const greeting = computed(() => {
   const h = new Date().getHours()
@@ -15,6 +18,11 @@ const greeting = computed(() => {
 const displayName = computed(() =>
   user.value?.displayName || user.value?.email?.split('@')[0] || 'there'
 )
+
+const totalHours = computed(() => {
+  const ms = (sessions.value ?? []).reduce((sum, s) => sum + (s.duration || 0), 0)
+  return (ms / 3600000).toFixed(1)
+})
 </script>
 
 <template>
@@ -32,7 +40,7 @@ const displayName = computed(() =>
     <!-- Active timer -->
     <div v-if="timerStore.active" class="mb-6">
       <div class="flex items-center gap-3 p-4 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 rounded-xl">
-        <span class="size-3 rounded-full bg-violet-500 animate-pulse flex-shrink-0" />
+        <span class="size-3 rounded-full bg-violet-500 animate-pulse shrink-0" />
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-violet-800 dark:text-violet-200">Timer running</p>
           <p class="text-xs text-violet-600 dark:text-violet-400 truncate">{{ timerStore.active.label }}</p>
@@ -50,15 +58,15 @@ const displayName = computed(() =>
         <p class="text-xs text-zinc-500 mt-0.5">Projects</p>
       </UCard>
       <UCard class="text-center py-4">
-        <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">—</p>
+        <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ openTasks?.length ?? 0 }}</p>
         <p class="text-xs text-zinc-500 mt-0.5">Open Tasks</p>
       </UCard>
       <UCard class="text-center py-4">
-        <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">—</p>
+        <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ notes?.length ?? 0 }}</p>
         <p class="text-xs text-zinc-500 mt-0.5">Notes</p>
       </UCard>
       <UCard class="text-center py-4">
-        <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">—</p>
+        <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ totalHours }}h</p>
         <p class="text-xs text-zinc-500 mt-0.5">Hours Tracked</p>
       </UCard>
     </div>

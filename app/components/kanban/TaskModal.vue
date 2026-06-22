@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Timestamp } from 'firebase/firestore'
-import type { Task, TaskStatus, TaskPriority } from '~/types'
+import type { Task, TaskStatus, TaskPriority, ChecklistItem } from '~/types'
 import { TASK_COLUMNS } from '~/types'
 
 const props = defineProps<{
@@ -25,10 +25,12 @@ const form = reactive({
   status: (props.defaultStatus ?? 'todo') as TaskStatus,
   priority: 'medium' as TaskPriority,
   tags: [] as string[],
-  dueDateStr: '' // YYYY-MM-DD string for the date input
+  dueDateStr: '',
+  checklist: [] as ChecklistItem[]
 })
 
 const tagInput = ref('')
+const checklistInput = ref('')
 const loading = ref(false)
 
 watch(() => props.task, (task) => {
@@ -38,6 +40,7 @@ watch(() => props.task, (task) => {
     form.status = task.status
     form.priority = task.priority
     form.tags = [...task.tags]
+    form.checklist = task.checklist ? task.checklist.map(c => ({ ...c })) : []
     const d = task.dueDate?.toDate()
     form.dueDateStr = d ? d.toISOString().slice(0, 10) : ''
   } else {
@@ -46,21 +49,33 @@ watch(() => props.task, (task) => {
     form.status = (props.defaultStatus ?? 'todo') as TaskStatus
     form.priority = 'medium'
     form.tags = []
+    form.checklist = []
     form.dueDateStr = ''
   }
 }, { immediate: true })
 
 function addTag() {
   const tag = tagInput.value.trim().toLowerCase()
-  if (tag && !form.tags.includes(tag)) {
-    form.tags.push(tag)
-  }
+  if (tag && !form.tags.includes(tag)) form.tags.push(tag)
   tagInput.value = ''
 }
 
 function removeTag(tag: string) {
   form.tags = form.tags.filter(t => t !== tag)
 }
+
+function addChecklistItem() {
+  const text = checklistInput.value.trim()
+  if (!text) return
+  form.checklist.push({ id: crypto.randomUUID(), text, done: false })
+  checklistInput.value = ''
+}
+
+function removeChecklistItem(id: string) {
+  form.checklist = form.checklist.filter(c => c.id !== id)
+}
+
+const checklistDoneCount = computed(() => form.checklist.filter(c => c.done).length)
 
 async function save() {
   if (!form.title.trim()) return
@@ -74,6 +89,7 @@ async function save() {
         status: form.status,
         priority: form.priority,
         tags: form.tags,
+        checklist: form.checklist,
         dueDate: dueDate ? Timestamp.fromDate(dueDate) : null
       })
       success('Task updated')
@@ -84,6 +100,7 @@ async function save() {
         status: form.status,
         priority: form.priority,
         tags: form.tags,
+        checklist: form.checklist,
         dueDate
       })
       success('Task created')
@@ -179,6 +196,52 @@ const statusOptions = TASK_COLUMNS.map(c => ({ label: c.label, value: c.id }))
                 <UIcon name="i-lucide-x" class="size-3" />
               </button>
             </span>
+          </div>
+        </UFormField>
+
+        <!-- Checklist -->
+        <UFormField :label="`Checklist${form.checklist.length ? ` (${checklistDoneCount}/${form.checklist.length})` : ''}`">
+          <!-- Progress bar -->
+          <div v-if="form.checklist.length" class="h-1.5 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden mb-3">
+            <div
+              class="h-full bg-violet-500 rounded-full transition-all"
+              :style="{ width: `${Math.round((checklistDoneCount / form.checklist.length) * 100)}%` }"
+            />
+          </div>
+          <!-- Items -->
+          <div v-if="form.checklist.length" class="space-y-1.5 mb-2">
+            <div
+              v-for="item in form.checklist"
+              :key="item.id"
+              class="flex items-center gap-2 group"
+            >
+              <input
+                type="checkbox"
+                class="size-4 rounded accent-violet-600 cursor-pointer shrink-0"
+                :checked="item.done"
+                @change="item.done = !item.done"
+              />
+              <span
+                class="flex-1 text-sm text-zinc-700 dark:text-zinc-300"
+                :class="{ 'line-through text-zinc-400': item.done }"
+              >{{ item.text }}</span>
+              <button
+                class="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-rose-500 transition-all"
+                @click="removeChecklistItem(item.id)"
+              >
+                <UIcon name="i-lucide-x" class="size-3.5" />
+              </button>
+            </div>
+          </div>
+          <!-- Add item -->
+          <div class="flex gap-2">
+            <UInput
+              v-model="checklistInput"
+              placeholder="Add item…"
+              class="flex-1"
+              @keydown.enter.prevent="addChecklistItem"
+            />
+            <UButton label="Add" color="neutral" variant="outline" @click="addChecklistItem" />
           </div>
         </UFormField>
       </div>

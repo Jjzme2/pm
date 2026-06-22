@@ -10,7 +10,7 @@ import {
   writeBatch
 } from 'firebase/firestore'
 import { useCollection } from 'vuefire'
-import type { Project, ProjectColor } from '~/types'
+import type { Project, ProjectColor, ProjectStatus } from '~/types'
 
 export function useProjects() {
   const db = useFirestore()
@@ -32,10 +32,12 @@ export function useProjects() {
     description: string
     color: ProjectColor
     icon: string
+    status?: ProjectStatus
   }) {
     const order = (projects.value?.length ?? 0)
     await addDoc(projectsRef(), {
       ...data,
+      status: data.status ?? 'active',
       order,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()

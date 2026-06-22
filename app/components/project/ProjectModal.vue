@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project, ProjectColor } from '~/types'
+import type { Project, ProjectColor, ProjectStatus } from '~/types'
 import { PROJECT_COLORS, PROJECT_ICONS } from '~/types'
 
 const props = defineProps<{ project?: Project | null }>()
@@ -14,7 +14,8 @@ const form = reactive({
   name: '',
   description: '',
   color: 'violet' as ProjectColor,
-  icon: 'i-lucide-folder'
+  icon: 'i-lucide-folder',
+  status: 'active' as ProjectStatus
 })
 
 const loading = ref(false)
@@ -25,11 +26,13 @@ watch(() => props.project, (project) => {
     form.description = project.description
     form.color = project.color
     form.icon = project.icon
+    form.status = project.status ?? 'active'
   } else {
     form.name = ''
     form.description = ''
     form.color = 'violet'
     form.icon = 'i-lucide-folder'
+    form.status = 'active'
   }
 }, { immediate: true })
 
@@ -78,7 +81,7 @@ const iconBg = computed(() => {
       <div class="space-y-5">
         <!-- Preview -->
         <div class="flex items-center gap-3">
-          <div class="size-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all" :class="iconBg">
+          <div class="size-14 rounded-2xl flex items-center justify-center shrink-0 transition-all" :class="iconBg">
             <UIcon :name="form.icon" class="size-7" />
           </div>
           <div>
@@ -108,6 +111,29 @@ const iconBg = computed(() => {
               ]"
               @click="form.color = color"
             />
+          </div>
+        </UFormField>
+
+        <!-- Status -->
+        <UFormField label="Status">
+          <div class="flex gap-2 flex-wrap">
+            <button
+              v-for="s in [
+                { value: 'active', label: 'Active', icon: 'i-lucide-play-circle' },
+                { value: 'on_hold', label: 'On Hold', icon: 'i-lucide-pause-circle' },
+                { value: 'completed', label: 'Completed', icon: 'i-lucide-check-circle' },
+                { value: 'archived', label: 'Archived', icon: 'i-lucide-archive' }
+              ]"
+              :key="s.value"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all"
+              :class="form.status === s.value
+                ? 'bg-violet-50 dark:bg-violet-950/40 border-violet-300 dark:border-violet-700 text-violet-600 dark:text-violet-400'
+                : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:border-zinc-300'"
+              @click="form.status = s.value as ProjectStatus"
+            >
+              <UIcon :name="s.icon" class="size-3.5" />
+              {{ s.label }}
+            </button>
           </div>
         </UFormField>
 

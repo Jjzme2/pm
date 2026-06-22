@@ -62,6 +62,23 @@ const formattedDue = computed(() => {
       {{ task.description }}
     </p>
 
+    <!-- Checklist progress -->
+    <div v-if="task.checklist?.length" class="mb-2">
+      <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+        <span class="flex items-center gap-1">
+          <UIcon name="i-lucide-check-square" class="size-3" />
+          {{ task.checklist.filter(c => c.done).length }}/{{ task.checklist.length }}
+        </span>
+      </div>
+      <div class="h-1 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden">
+        <div
+          class="h-full rounded-full transition-all"
+          :class="task.checklist.every(c => c.done) ? 'bg-emerald-500' : 'bg-violet-400'"
+          :style="{ width: `${Math.round((task.checklist.filter(c => c.done).length / task.checklist.length) * 100)}%` }"
+        />
+      </div>
+    </div>
+
     <!-- Footer: tags + due date -->
     <div class="flex items-center gap-1.5 flex-wrap mt-1">
       <span

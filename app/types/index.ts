@@ -8,6 +8,13 @@ export type ProjectColor =
 
 export type TaskStatus = 'todo' | 'inprogress' | 'review' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high'
+export type ProjectStatus = 'active' | 'on_hold' | 'completed' | 'archived'
+
+export interface ChecklistItem {
+  id: string
+  text: string
+  done: boolean
+}
 
 export interface Project {
   id: string
@@ -16,6 +23,7 @@ export interface Project {
   color: ProjectColor
   icon: string
   order: number
+  status: ProjectStatus
   createdAt: Timestamp
   updatedAt: Timestamp
 }
@@ -29,6 +37,7 @@ export interface Task {
   priority: TaskPriority
   tags: string[]
   dueDate: Timestamp | null
+  checklist: ChecklistItem[]
   order: number
   createdAt: Timestamp
   updatedAt: Timestamp

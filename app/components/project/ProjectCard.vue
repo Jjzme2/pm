@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import type { Project } from '~/types'
 
-defineProps<{ project: Project; taskCount?: number; noteCount?: number }>()
+defineProps<{
+  project: Project
+  taskCount?: number
+  noteCount?: number
+  doneCount?: number
+}>()
 const emit = defineEmits<{
   edit: [project: Project]
   delete: [id: string]
 }>()
+
+const statusConfig: Record<string, { label: string; color: string }> = {
+  active: { label: 'Active', color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' },
+  on_hold: { label: 'On Hold', color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' },
+  completed: { label: 'Completed', color: 'text-blue-500 bg-blue-50 dark:bg-blue-950/40' },
+  archived: { label: 'Archived', color: 'text-zinc-400 bg-zinc-100 dark:bg-zinc-800' }
+}
 
 const colorRing: Record<string, string> = {
   violet: 'ring-violet-400/30 dark:ring-violet-500/20',
@@ -72,19 +84,43 @@ const iconBg: Record<string, string> = {
       </div>
     </div>
 
-    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-1">{{ project.name }}</h3>
+    <div class="flex items-start justify-between gap-2 mb-1">
+      <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">{{ project.name }}</h3>
+      <span
+        v-if="project.status && project.status !== 'active'"
+        class="shrink-0 text-xs px-1.5 py-0.5 rounded font-medium"
+        :class="statusConfig[project.status]?.color"
+      >
+        {{ statusConfig[project.status]?.label }}
+      </span>
+    </div>
     <p v-if="project.description" class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-3">
       {{ project.description }}
     </p>
 
+    <!-- Progress bar -->
+    <div v-if="taskCount && taskCount > 0" class="mb-3">
+      <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
+        <span>{{ doneCount ?? 0 }}/{{ taskCount }} tasks</span>
+        <span>{{ Math.round(((doneCount ?? 0) / taskCount) * 100) }}%</span>
+      </div>
+      <div class="h-1.5 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden">
+        <div
+          class="h-full rounded-full transition-all"
+          :class="(doneCount ?? 0) === taskCount ? 'bg-emerald-500' : 'bg-violet-500'"
+          :style="{ width: `${Math.round(((doneCount ?? 0) / taskCount) * 100)}%` }"
+        />
+      </div>
+    </div>
+
     <div class="flex items-center gap-3 text-xs text-zinc-400">
       <span v-if="taskCount !== undefined" class="flex items-center gap-1">
         <UIcon name="i-lucide-check-square" class="size-3.5" />
-        {{ taskCount }} tasks
+        {{ taskCount }} task{{ taskCount !== 1 ? 's' : '' }}
       </span>
       <span v-if="noteCount !== undefined" class="flex items-center gap-1">
         <UIcon name="i-lucide-notebook" class="size-3.5" />
-        {{ noteCount }} notes
+        {{ noteCount }} note{{ noteCount !== 1 ? 's' : '' }}
       </span>
     </div>
   </NuxtLink>

@@ -3,8 +3,11 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const { projects } = useProjects()
 
+const showProjectModal = ref(false)
+
 const navItems = [
   { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/' },
+  { label: 'My Tasks', icon: 'i-lucide-check-square', to: '/my-tasks' },
   { label: 'Projects', icon: 'i-lucide-folder-kanban', to: '/projects' },
   { label: 'Notes', icon: 'i-lucide-notebook-pen', to: '/notes' },
   { label: 'Timers', icon: 'i-lucide-timer', to: '/timers' },
@@ -65,9 +68,16 @@ const isActive = (path: string) => {
 
       <!-- Projects section -->
       <div v-if="projects && projects.length" class="mt-4">
-        <p class="px-3 py-1 text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-          Projects
-        </p>
+        <div class="flex items-center justify-between px-3 py-1">
+          <p class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Projects</p>
+          <button
+            class="size-4 flex items-center justify-center text-zinc-400 hover:text-violet-500 transition-colors rounded"
+            title="New Project"
+            @click="showProjectModal = true"
+          >
+            <UIcon name="i-lucide-plus" class="size-3.5" />
+          </button>
+        </div>
         <ul class="mt-1 space-y-0.5">
           <li v-for="project in projects" :key="project.id">
             <NuxtLink
@@ -88,6 +98,12 @@ const isActive = (path: string) => {
         </ul>
       </div>
     </nav>
+
+    <ProjectModal
+      v-if="showProjectModal"
+      @close="showProjectModal = false"
+      @saved="showProjectModal = false"
+    />
 
     <!-- Back to hub -->
     <div class="p-2 border-t border-zinc-200 dark:border-zinc-800 flex-shrink-0">

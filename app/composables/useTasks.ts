@@ -11,7 +11,7 @@ import {
   writeBatch
 } from 'firebase/firestore'
 import { useCollection } from 'vuefire'
-import type { Task, TaskStatus, TaskPriority } from '~/types'
+import type { Task, TaskStatus, TaskPriority, ChecklistItem } from '~/types'
 
 export function useTasks(projectId: MaybeRef<string>) {
   const db = useFirestore()
@@ -51,6 +51,7 @@ export function useTasks(projectId: MaybeRef<string>) {
     status: TaskStatus
     priority?: TaskPriority
     tags?: string[]
+    checklist?: ChecklistItem[]
     dueDate?: Date | null
   }) {
     const pid = toValue(projectId)
@@ -62,6 +63,7 @@ export function useTasks(projectId: MaybeRef<string>) {
       status: data.status,
       priority: data.priority ?? 'medium',
       tags: data.tags ?? [],
+      checklist: data.checklist ?? [],
       dueDate: data.dueDate ?? null,
       order: statusTasks.length,
       createdAt: serverTimestamp(),
