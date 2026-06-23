@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
-useSeoMeta({ title: 'Sign In — ILYTAT PM' })
+useSeoMeta({ title: 'Sign In', robots: 'noindex' })
 
 const { loginWithEmail, loginWithGoogle } = useAuth()
 const route = useRoute()

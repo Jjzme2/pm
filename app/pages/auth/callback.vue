@@ -2,6 +2,7 @@
 import { signInWithCustomToken } from 'firebase/auth'
 
 definePageMeta({ layout: 'auth' })
+useSeoMeta({ title: 'Signing in…', robots: 'noindex' })
 
 const route = useRoute()
 const error = ref('')

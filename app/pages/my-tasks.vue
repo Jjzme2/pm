@@ -3,6 +3,7 @@ import type { Task, TaskStatus, TaskPriority } from '~/types'
 import { TASK_COLUMNS } from '~/types'
 
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ title: 'My Tasks' })
 
 const { tasks, updateTask, deleteTask } = useAllTasks()
 const { projects } = useProjects()

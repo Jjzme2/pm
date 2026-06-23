@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ title: 'Links' })
 
 const { links, deleteLink } = useLinks()
 const { success } = useNotification()

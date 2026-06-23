@@ -8,8 +8,13 @@ useHead({
 })
 
 useSeoMeta({
+  titleTemplate: '%s — ILYTAT PM',
   title: 'ILYTAT PM',
-  description: 'Project management for the ILYTAT Suite'
+  description: 'Project management for the ILYTAT Suite',
+  ogTitle: 'ILYTAT PM',
+  ogDescription: 'Project management for the ILYTAT Suite',
+  ogType: 'website',
+  twitterCard: 'summary'
 })
 
 onMounted(() => {

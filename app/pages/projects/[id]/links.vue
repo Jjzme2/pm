@@ -6,6 +6,7 @@ const projectId = computed(() => route.params.id as string)
 
 const { projects } = useProjects()
 const project = computed(() => projects.value?.find(p => p.id === projectId.value))
+useSeoMeta({ title: computed(() => project.value?.name ? `${project.value.name} — Links` : 'Links') })
 
 const { links, deleteLink } = useLinks(projectId)
 const { success } = useNotification()

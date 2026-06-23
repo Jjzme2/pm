@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ title: 'Notes' })
 
 const { notes, togglePin, deleteNote } = useNotes()
 const { success } = useNotification()
