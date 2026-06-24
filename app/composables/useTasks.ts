@@ -6,7 +6,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   serverTimestamp,
   writeBatch
 } from 'firebase/firestore'
@@ -22,16 +21,14 @@ export function useTasks(projectId: MaybeRef<string>) {
     return collection(db, 'users', user.value!.uid, 'pm_tasks')
   }
 
-  const tasks = useCollection<Task>(
+  const _tasks = useCollection<Task>(
     computed(() => user.value
-      ? query(
-          tasksRef(),
-          where('projectId', '==', toValue(projectId)),
-          orderBy('order', 'asc')
-        )
+      ? query(tasksRef(), where('projectId', '==', toValue(projectId)))
       : null
     )
   )
+
+  const tasks = computed<Task[]>(() => _tasks.value ?? [])
 
   const tasksByStatus = computed(() => {
     const map: Record<TaskStatus, Task[]> = {
@@ -40,8 +37,11 @@ export function useTasks(projectId: MaybeRef<string>) {
       review: [],
       done: []
     }
-    for (const t of (tasks.value ?? [])) {
+    for (const t of tasks.value) {
       map[t.status]?.push(t)
+    }
+    for (const col of Object.values(map)) {
+      col.sort((a, b) => a.order - b.order)
     }
     return map
   })

@@ -6,7 +6,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   serverTimestamp
 } from 'firebase/firestore'
 import { useCollection } from 'vuefire'
@@ -20,21 +19,27 @@ export function useNotes(projectId?: MaybeRef<string | null>) {
     return collection(db, 'users', user.value!.uid, 'pm_notes')
   }
 
-  const notes = useCollection<Note>(
+  const _notes = useCollection<Note>(
     computed(() => {
       if (!user.value) return null
       const pid = projectId ? toValue(projectId) : undefined
       if (pid !== undefined) {
-        return query(
-          notesRef(),
-          where('projectId', '==', pid),
-          orderBy('pinned', 'desc'),
-          orderBy('updatedAt', 'desc')
-        )
+        return query(notesRef(), where('projectId', '==', pid))
       }
-      return query(notesRef(), orderBy('pinned', 'desc'), orderBy('updatedAt', 'desc'))
+      return query(notesRef())
     })
   )
+
+  const notes = computed<Note[]>(() => {
+    const raw = _notes.value ?? []
+    if (!raw.length) return raw
+    return [...raw].sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
+      const aTime = a.updatedAt?.toMillis() ?? 0
+      const bTime = b.updatedAt?.toMillis() ?? 0
+      return bTime - aTime
+    })
+  })
 
   async function createNote(data: {
     title: string

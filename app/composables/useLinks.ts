@@ -6,7 +6,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   serverTimestamp
 } from 'firebase/firestore'
 import { useCollection } from 'vuefire'
@@ -20,20 +19,26 @@ export function useLinks(projectId?: MaybeRef<string | null>) {
     return collection(db, 'users', user.value!.uid, 'pm_links')
   }
 
-  const links = useCollection<QuickLink>(
+  const _links = useCollection<QuickLink>(
     computed(() => {
       if (!user.value) return null
       const pid = projectId ? toValue(projectId) : undefined
       if (pid !== undefined) {
-        return query(
-          linksRef(),
-          where('projectId', '==', pid),
-          orderBy('createdAt', 'desc')
-        )
+        return query(linksRef(), where('projectId', '==', pid))
       }
-      return query(linksRef(), orderBy('createdAt', 'desc'))
+      return query(linksRef())
     })
   )
+
+  const links = computed<QuickLink[]>(() => {
+    const raw = _links.value ?? []
+    if (!raw.length) return raw
+    return [...raw].sort((a, b) => {
+      const aTime = a.createdAt?.toMillis() ?? 0
+      const bTime = b.createdAt?.toMillis() ?? 0
+      return bTime - aTime
+    })
+  })
 
   async function createLink(data: {
     title: string
