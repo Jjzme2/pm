@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Project } from '~/types'
+import { PROJECT_STATUS_CONFIG } from '~/types'
 
 defineProps<{
   project: Project
@@ -11,13 +12,6 @@ const emit = defineEmits<{
   edit: [project: Project]
   delete: [id: string]
 }>()
-
-const statusConfig: Record<string, { label: string; color: string }> = {
-  active: { label: 'Active', color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' },
-  on_hold: { label: 'On Hold', color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' },
-  completed: { label: 'Completed', color: 'text-blue-500 bg-blue-50 dark:bg-blue-950/40' },
-  archived: { label: 'Archived', color: 'text-zinc-400 bg-zinc-100 dark:bg-zinc-800' }
-}
 
 const colorRing: Record<string, string> = {
   violet: 'ring-violet-400/30 dark:ring-violet-500/20',
@@ -61,7 +55,7 @@ const iconBg: Record<string, string> = {
   >
     <div class="flex items-start justify-between gap-3 mb-3">
       <div
-        class="size-11 rounded-xl flex items-center justify-center flex-shrink-0"
+        class="size-11 rounded-xl flex items-center justify-center shrink-0"
         :class="iconBg[project.color] || iconBg.violet"
       >
         <UIcon :name="project.icon || 'i-lucide-folder'" class="size-5" />
@@ -89,9 +83,9 @@ const iconBg: Record<string, string> = {
       <span
         v-if="project.status && project.status !== 'active'"
         class="shrink-0 text-xs px-1.5 py-0.5 rounded font-medium"
-        :class="statusConfig[project.status]?.color"
+        :class="PROJECT_STATUS_CONFIG[project.status]?.color"
       >
-        {{ statusConfig[project.status]?.label }}
+        {{ PROJECT_STATUS_CONFIG[project.status]?.label }}
       </span>
     </div>
     <p v-if="project.description" class="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-3">

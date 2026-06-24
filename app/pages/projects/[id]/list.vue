@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Task, TaskStatus, TaskPriority } from '~/types'
-import { TASK_COLUMNS } from '~/types'
+import { TASK_COLUMNS, PRIORITY_CONFIG, STATUS_CONFIG } from '~/types'
+import { dueDateClass } from '~/utils/task'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -54,18 +55,6 @@ const filteredTasks = computed(() => {
   })
 })
 
-const priorityConfig = {
-  high: { color: 'text-rose-500', icon: 'i-lucide-chevrons-up', label: 'High' },
-  medium: { color: 'text-amber-500', icon: 'i-lucide-minus', label: 'Medium' },
-  low: { color: 'text-sky-500', icon: 'i-lucide-chevrons-down', label: 'Low' }
-}
-
-const statusConfig = {
-  todo: { label: 'To Do', color: 'text-zinc-400', icon: 'i-lucide-circle' },
-  inprogress: { label: 'In Progress', color: 'text-blue-400', icon: 'i-lucide-circle-dot' },
-  review: { label: 'Review', color: 'text-amber-400', icon: 'i-lucide-circle-dot-dashed' },
-  done: { label: 'Done', color: 'text-emerald-400', icon: 'i-lucide-circle-check' }
-}
 
 const statusOptions = [
   { label: 'All', value: 'all' },
@@ -98,15 +87,6 @@ async function handleDelete(id: string) {
   success('Task deleted')
 }
 
-function dueDateClass(task: Task) {
-  if (!task.dueDate || task.status === 'done') return 'text-zinc-400'
-  const now = new Date()
-  const due = task.dueDate.toDate()
-  const diff = due.getTime() - now.getTime()
-  if (diff < 0) return 'text-rose-500 font-medium'
-  if (diff < 86400000) return 'text-amber-500 font-medium'
-  return 'text-zinc-400'
-}
 
 const sortIcon = (col: typeof sortBy.value) => {
   if (sortBy.value !== col) return 'i-lucide-chevrons-up-down'
@@ -179,15 +159,15 @@ const sortIcon = (col: typeof sortBy.value) => {
           </div>
 
           <!-- Priority -->
-          <span class="flex items-center gap-1 text-xs" :class="priorityConfig[task.priority]?.color">
-            <UIcon :name="priorityConfig[task.priority]?.icon" class="size-3.5" />
-            {{ priorityConfig[task.priority]?.label }}
+          <span class="flex items-center gap-1 text-xs" :class="PRIORITY_CONFIG[task.priority]?.color">
+            <UIcon :name="PRIORITY_CONFIG[task.priority]?.icon" class="size-3.5" />
+            {{ PRIORITY_CONFIG[task.priority]?.label }}
           </span>
 
           <!-- Status -->
-          <span class="flex items-center gap-1 text-xs" :class="statusConfig[task.status]?.color">
-            <UIcon :name="statusConfig[task.status]?.icon" class="size-3.5" />
-            {{ statusConfig[task.status]?.label }}
+          <span class="flex items-center gap-1 text-xs" :class="STATUS_CONFIG[task.status]?.color">
+            <UIcon :name="STATUS_CONFIG[task.status]?.icon" class="size-3.5" />
+            {{ STATUS_CONFIG[task.status]?.label }}
           </span>
 
           <!-- Due date -->

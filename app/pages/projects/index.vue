@@ -3,7 +3,18 @@ definePageMeta({ middleware: 'auth' })
 useSeoMeta({ title: 'Projects' })
 
 const { projects, deleteProject } = useProjects()
+const { tasks: allTasks } = useAllTasks()
 const { success } = useNotification()
+
+const taskCountByProject = computed(() => {
+  const total: Record<string, number> = {}
+  const done: Record<string, number> = {}
+  for (const t of allTasks.value ?? []) {
+    total[t.projectId] = (total[t.projectId] ?? 0) + 1
+    if (t.status === 'done') done[t.projectId] = (done[t.projectId] ?? 0) + 1
+  }
+  return { total, done }
+})
 
 const showModal = ref(false)
 const editingProject = ref(null)
@@ -44,6 +55,8 @@ async function handleDelete(id: string) {
         v-for="project in projects"
         :key="project.id"
         :project="project"
+        :task-count="taskCountByProject.total[project.id] ?? 0"
+        :done-count="taskCountByProject.done[project.id] ?? 0"
         @edit="openEdit"
         @delete="handleDelete"
       />

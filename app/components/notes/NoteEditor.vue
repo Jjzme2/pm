@@ -81,7 +81,7 @@ const isActive = (name: string, attrs?: Record<string, any>) =>
     <!-- Toolbar (only when editable) -->
     <div
       v-if="editable !== false"
-      class="flex flex-wrap items-center gap-0.5 p-1.5 border-b border-zinc-200 dark:border-zinc-700 flex-shrink-0"
+      class="flex flex-wrap items-center gap-0.5 p-1.5 border-b border-zinc-200 dark:border-zinc-700 shrink-0"
     >
       <UButton icon="i-lucide-bold" :color="isActive('bold') ? 'violet' : 'neutral'" variant="ghost" size="xs" @click="toggleBold" />
       <UButton icon="i-lucide-italic" :color="isActive('italic') ? 'violet' : 'neutral'" variant="ghost" size="xs" @click="toggleItalic" />

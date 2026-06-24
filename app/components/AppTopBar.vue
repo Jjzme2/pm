@@ -11,14 +11,14 @@ async function signOut() {
 </script>
 
 <template>
-  <header class="h-14 flex-shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 gap-4">
+  <header class="h-14 shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 gap-4">
     <!-- Active timer pill -->
     <div class="flex-1 min-w-0">
       <TimerActivePill v-if="timerStore.active" />
     </div>
 
     <!-- Right actions -->
-    <div class="flex items-center gap-1 flex-shrink-0">
+    <div class="flex items-center gap-1 shrink-0">
       <UColorModeButton size="sm" />
 
       <UTooltip v-if="store.currentUser" :text="store.currentUser.displayName || store.currentUser.email || 'Account'">

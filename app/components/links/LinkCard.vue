@@ -32,7 +32,7 @@ function getDomain(url: string) {
   <div class="group relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-sm transition-all">
     <div class="flex items-start gap-3">
       <!-- Icon/favicon -->
-      <div class="size-10 rounded-lg flex items-center justify-center flex-shrink-0" :class="colorBg[link.color] || colorBg.violet">
+      <div class="size-10 rounded-lg flex items-center justify-center shrink-0" :class="colorBg[link.color] || colorBg.violet">
         <span class="text-base font-bold">{{ link.title.charAt(0).toUpperCase() }}</span>
       </div>
 

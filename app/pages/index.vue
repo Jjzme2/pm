@@ -5,9 +5,19 @@ useSeoMeta({ title: 'Home' })
 const user = useCurrentUser()
 const { projects } = useProjects()
 const timerStore = useTimerStore()
-const { openTasks } = useAllTasks()
+const { tasks: allTasks, openTasks, overdueTasks } = useAllTasks()
 const { notes } = useNotes()
 const { sessions } = useTimers()
+
+const taskCountByProject = computed(() => {
+  const total: Record<string, number> = {}
+  const done: Record<string, number> = {}
+  for (const t of allTasks.value ?? []) {
+    total[t.projectId] = (total[t.projectId] ?? 0) + 1
+    if (t.status === 'done') done[t.projectId] = (done[t.projectId] ?? 0) + 1
+  }
+  return { total, done }
+})
 
 const greeting = computed(() => {
   const h = new Date().getHours()
@@ -36,6 +46,25 @@ const totalHours = computed(() => {
       <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
         {{ new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) }}
       </p>
+    </div>
+
+    <!-- Overdue tasks warning -->
+    <div v-if="overdueTasks?.length" class="mb-6">
+      <NuxtLink
+        to="/my-tasks"
+        class="flex items-center gap-3 p-4 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 rounded-xl hover:border-rose-300 dark:hover:border-rose-700 transition-colors"
+      >
+        <UIcon name="i-lucide-circle-alert" class="size-5 text-rose-500 shrink-0" />
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-rose-800 dark:text-rose-200">
+            {{ overdueTasks.length }} overdue task{{ overdueTasks.length !== 1 ? 's' : '' }}
+          </p>
+          <p class="text-xs text-rose-600 dark:text-rose-400 truncate">
+            {{ overdueTasks.slice(0, 2).map(t => t.title).join(', ') }}{{ overdueTasks.length > 2 ? ` +${overdueTasks.length - 2} more` : '' }}
+          </p>
+        </div>
+        <UIcon name="i-lucide-arrow-right" class="size-4 text-rose-400 shrink-0" />
+      </NuxtLink>
     </div>
 
     <!-- Active timer -->
@@ -84,6 +113,8 @@ const totalHours = computed(() => {
           v-for="project in projects.slice(0, 6)"
           :key="project.id"
           :project="project"
+          :task-count="taskCountByProject.total[project.id] ?? 0"
+          :done-count="taskCountByProject.done[project.id] ?? 0"
         />
       </div>
       <div v-else class="text-center py-12 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700">

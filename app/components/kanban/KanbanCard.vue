@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import type { Task } from '~/types'
+import { PRIORITY_CONFIG } from '~/types'
 
 const props = defineProps<{ task: Task }>()
 const emit = defineEmits<{
   edit: [task: Task]
   delete: [id: string]
 }>()
-
-const priorityConfig = {
-  high: { color: 'text-rose-500', icon: 'i-lucide-chevrons-up', label: 'High' },
-  medium: { color: 'text-amber-500', icon: 'i-lucide-minus', label: 'Medium' },
-  low: { color: 'text-sky-500', icon: 'i-lucide-chevrons-down', label: 'Low' }
-}
 
 const dueStatus = computed(() => {
   if (!props.task.dueDate) return null
@@ -38,16 +33,16 @@ const formattedDue = computed(() => {
     <div class="flex items-start justify-between gap-2 mb-2">
       <span
         class="text-xs font-medium flex items-center gap-1"
-        :class="priorityConfig[task.priority]?.color"
+        :class="PRIORITY_CONFIG[task.priority]?.color"
       >
-        <UIcon :name="priorityConfig[task.priority]?.icon" class="size-3" />
+        <UIcon :name="PRIORITY_CONFIG[task.priority]?.icon" class="size-3" />
       </span>
       <UButton
         icon="i-lucide-trash-2"
         color="neutral"
         variant="ghost"
         size="xs"
-        class="opacity-0 group-hover:opacity-100 -mt-1 -mr-1 flex-shrink-0"
+        class="opacity-0 group-hover:opacity-100 -mt-1 -mr-1 shrink-0"
         @click.stop="emit('delete', task.id)"
       />
     </div>

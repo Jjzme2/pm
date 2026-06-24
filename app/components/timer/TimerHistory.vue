@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TimerSession } from '~/types'
+import { formatDuration } from '~/utils/task'
 
 const props = defineProps<{
   projectId?: string | null
@@ -9,17 +10,6 @@ const { sessions, totalDuration, deleteSession } = useTimers(
   computed(() => props.projectId ?? null)
 )
 const { success } = useNotification()
-
-function formatDuration(ms: number) {
-  if (!ms) return '—'
-  const s = Math.floor(ms / 1000)
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const sec = s % 60
-  if (h > 0) return `${h}h ${m}m`
-  if (m > 0) return `${m}m ${sec}s`
-  return `${sec}s`
-}
 
 function formatDate(session: TimerSession) {
   if (!session.startTime) return ''
@@ -55,12 +45,12 @@ async function handleDelete(id: string) {
           <p class="text-sm font-medium text-zinc-800 dark:text-zinc-200 truncate">{{ session.label }}</p>
           <p class="text-xs text-zinc-400">{{ formatDate(session) }}</p>
         </div>
-        <span class="text-sm font-mono font-medium text-zinc-600 dark:text-zinc-300 tabular-nums flex-shrink-0">
+        <span class="text-sm font-mono font-medium text-zinc-600 dark:text-zinc-300 tabular-nums shrink-0">
           {{ formatDuration(session.duration) }}
         </span>
         <div
           v-if="!session.endTime"
-          class="size-2 rounded-full bg-violet-500 animate-pulse flex-shrink-0"
+          class="size-2 rounded-full bg-violet-500 animate-pulse shrink-0"
           title="Running"
         />
         <UButton
@@ -68,7 +58,7 @@ async function handleDelete(id: string) {
           color="neutral"
           variant="ghost"
           size="xs"
-          class="opacity-0 group-hover:opacity-100 flex-shrink-0"
+          class="opacity-0 group-hover:opacity-100 shrink-0"
           @click="handleDelete(session.id)"
         />
       </div>

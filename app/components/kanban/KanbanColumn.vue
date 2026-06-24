@@ -45,7 +45,7 @@ function onAdd(evt: Event & { item?: HTMLElement }) {
 </script>
 
 <template>
-  <div class="flex flex-col w-72 flex-shrink-0 bg-zinc-100 dark:bg-zinc-900/60 rounded-xl">
+  <div class="flex flex-col w-72 shrink-0 bg-zinc-100 dark:bg-zinc-900/60 rounded-xl">
     <!-- Column header -->
     <div class="flex items-center justify-between px-3 py-2.5">
       <div class="flex items-center gap-2">

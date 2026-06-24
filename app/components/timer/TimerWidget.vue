@@ -45,7 +45,7 @@ const isRunningHere = computed(() =>
 
 <template>
   <div class="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
-    <UIcon name="i-lucide-timer" class="size-5 text-violet-500 flex-shrink-0" />
+    <UIcon name="i-lucide-timer" class="size-5 text-violet-500 shrink-0" />
 
     <div class="flex-1 min-w-0">
       <div v-if="timerStore.active && isRunningHere" class="flex items-center gap-2">

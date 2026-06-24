@@ -70,7 +70,7 @@ function friendlyError(code: string) {
     </div>
 
     <div class="space-y-4">
-      <UAlert v-if="error" color="error" variant="subtle" :description="error" />
+      <UAlert v-if="error" color="red" variant="subtle" :description="error" />
 
       <UFormField label="Email">
         <UInput

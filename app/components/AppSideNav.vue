@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { COLOR_TEXT_MAP } from '~/types'
+
 const route = useRoute()
 const config = useRuntimeConfig()
 const { projects } = useProjects()
@@ -14,25 +16,6 @@ const navItems = [
   { label: 'Quick Links', icon: 'i-lucide-link', to: '/links' }
 ]
 
-const colorMap: Record<string, string> = {
-  violet: 'text-violet-500',
-  blue: 'text-blue-500',
-  emerald: 'text-emerald-500',
-  amber: 'text-amber-500',
-  rose: 'text-rose-500',
-  sky: 'text-sky-500',
-  green: 'text-green-500',
-  orange: 'text-orange-500',
-  purple: 'text-purple-500',
-  teal: 'text-teal-500',
-  pink: 'text-pink-500',
-  indigo: 'text-indigo-500',
-  lime: 'text-lime-500',
-  red: 'text-red-500',
-  cyan: 'text-cyan-500',
-  fuchsia: 'text-fuchsia-500'
-}
-
 const isActive = (path: string) => {
   if (path === '/') return route.path === '/'
   return route.path.startsWith(path)
@@ -40,9 +23,9 @@ const isActive = (path: string) => {
 </script>
 
 <template>
-  <aside class="w-60 flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col h-full">
+  <aside class="w-60 shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col h-full">
     <!-- Logo -->
-    <div class="h-14 flex items-center px-4 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
       <NuxtLink to="/" class="flex items-center gap-2.5">
         <UIcon name="i-lucide-folder-kanban" class="size-5 text-violet-500" />
         <span class="font-semibold tracking-tight">ILYTAT PM</span>
@@ -60,7 +43,7 @@ const isActive = (path: string) => {
               ? 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400'
               : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'"
           >
-            <UIcon :name="item.icon" class="size-4 flex-shrink-0" />
+            <UIcon :name="item.icon" class="size-4 shrink-0" />
             {{ item.label }}
           </NuxtLink>
         </li>
@@ -89,8 +72,8 @@ const isActive = (path: string) => {
             >
               <UIcon
                 :name="project.icon || 'i-lucide-folder'"
-                class="size-4 flex-shrink-0"
-                :class="colorMap[project.color] || 'text-zinc-400'"
+                class="size-4 shrink-0"
+                :class="COLOR_TEXT_MAP[project.color] || 'text-zinc-400'"
               />
               <span class="truncate">{{ project.name }}</span>
             </NuxtLink>
@@ -106,15 +89,15 @@ const isActive = (path: string) => {
     />
 
     <!-- Back to hub -->
-    <div class="p-2 border-t border-zinc-200 dark:border-zinc-800 flex-shrink-0">
+    <div class="p-2 border-t border-zinc-200 dark:border-zinc-800 shrink-0">
       <a
         :href="config.public.hubUrl"
         target="_blank"
         class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
       >
-        <UIcon name="i-lucide-layout-grid" class="size-4 flex-shrink-0" />
+        <UIcon name="i-lucide-layout-grid" class="size-4 shrink-0" />
         Back to Hub
-        <UIcon name="i-lucide-external-link" class="size-3 ml-auto flex-shrink-0 opacity-50" />
+        <UIcon name="i-lucide-external-link" class="size-3 ml-auto shrink-0 opacity-50" />
       </a>
     </div>
   </aside>

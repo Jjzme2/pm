@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Task, TaskStatus, TaskPriority } from '~/types'
-import { TASK_COLUMNS } from '~/types'
+import { TASK_COLUMNS, PRIORITY_CONFIG, STATUS_CONFIG } from '~/types'
+import { dueDateClass } from '~/utils/task'
 
 definePageMeta({ middleware: 'auth' })
 useSeoMeta({ title: 'My Tasks' })
@@ -59,18 +60,6 @@ const projectMap = computed(() => {
   return m
 })
 
-const priorityConfig = {
-  high: { color: 'text-rose-500', icon: 'i-lucide-chevrons-up', label: 'High' },
-  medium: { color: 'text-amber-500', icon: 'i-lucide-minus', label: 'Medium' },
-  low: { color: 'text-sky-500', icon: 'i-lucide-chevrons-down', label: 'Low' }
-}
-
-const statusConfig = {
-  todo: { label: 'To Do', color: 'text-zinc-400', icon: 'i-lucide-circle' },
-  inprogress: { label: 'In Progress', color: 'text-blue-400', icon: 'i-lucide-circle-dot' },
-  review: { label: 'Review', color: 'text-amber-400', icon: 'i-lucide-circle-dot-dashed' },
-  done: { label: 'Done', color: 'text-emerald-400', icon: 'i-lucide-circle-check' }
-}
 
 function openEdit(task: Task) {
   editingTask.value = task
@@ -86,15 +75,6 @@ async function handleDelete(id: string) {
   success('Task deleted')
 }
 
-function dueDateClass(task: Task) {
-  if (!task.dueDate || task.status === 'done') return 'text-zinc-400'
-  const now = new Date()
-  const due = task.dueDate.toDate()
-  const diff = due.getTime() - now.getTime()
-  if (diff < 0) return 'text-rose-500 font-medium'
-  if (diff < 86400000) return 'text-amber-500 font-medium'
-  return 'text-zinc-400'
-}
 
 const statusOptions = [
   { label: 'All Statuses', value: 'all' },
@@ -208,10 +188,10 @@ const sortOptions = [
               v-if="projectMap[task.projectId]"
               :to="`/projects/${task.projectId}`"
               class="text-xs px-1.5 py-0.5 rounded font-medium truncate max-w-28 hover:opacity-80 transition-opacity"
-              :class="`text-${projectMap[task.projectId].color}-600 dark:text-${projectMap[task.projectId].color}-400 bg-${projectMap[task.projectId].color}-50 dark:bg-${projectMap[task.projectId].color}-950/40`"
+              :class="`text-${projectMap[task.projectId]?.color}-600 dark:text-${projectMap[task.projectId]?.color}-400 bg-${projectMap[task.projectId]?.color}-50 dark:bg-${projectMap[task.projectId]?.color}-950/40`"
               @click.stop
             >
-              {{ projectMap[task.projectId].name }}
+              {{ projectMap[task.projectId]?.name }}
             </NuxtLink>
           </div>
           <p v-if="task.description" class="text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
@@ -232,16 +212,16 @@ const sortOptions = [
 
           <!-- Priority -->
           <UIcon
-            :name="priorityConfig[task.priority]?.icon"
+            :name="PRIORITY_CONFIG[task.priority]?.icon"
             class="size-4"
-            :class="priorityConfig[task.priority]?.color"
-            :title="priorityConfig[task.priority]?.label"
+            :class="PRIORITY_CONFIG[task.priority]?.color"
+            :title="PRIORITY_CONFIG[task.priority]?.label"
           />
 
           <!-- Status -->
-          <span class="hidden sm:flex items-center gap-1 text-xs" :class="statusConfig[task.status]?.color">
-            <UIcon :name="statusConfig[task.status]?.icon" class="size-3.5" />
-            {{ statusConfig[task.status]?.label }}
+          <span class="hidden sm:flex items-center gap-1 text-xs" :class="STATUS_CONFIG[task.status]?.color">
+            <UIcon :name="STATUS_CONFIG[task.status]?.icon" class="size-3.5" />
+            {{ STATUS_CONFIG[task.status]?.label }}
           </span>
 
           <!-- Due date -->

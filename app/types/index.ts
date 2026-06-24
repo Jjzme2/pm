@@ -119,6 +119,46 @@ export const TASK_COLUMNS: { id: TaskStatus; label: string; icon: string; color:
   { id: 'done', label: 'Done', icon: 'i-lucide-circle-check', color: 'text-emerald-400' }
 ]
 
+export const PRIORITY_CONFIG: Record<TaskPriority, { label: string; icon: string; color: string }> = {
+  high: { label: 'High', icon: 'i-lucide-chevrons-up', color: 'text-rose-500' },
+  medium: { label: 'Medium', icon: 'i-lucide-minus', color: 'text-amber-500' },
+  low: { label: 'Low', icon: 'i-lucide-chevrons-down', color: 'text-sky-500' }
+}
+
+export const STATUS_CONFIG: Record<TaskStatus, { label: string; icon: string; color: string }> = {
+  todo: { label: 'To Do', icon: 'i-lucide-circle', color: 'text-zinc-400' },
+  inprogress: { label: 'In Progress', icon: 'i-lucide-circle-dot', color: 'text-blue-400' },
+  review: { label: 'Review', icon: 'i-lucide-circle-dot-dashed', color: 'text-amber-400' },
+  done: { label: 'Done', icon: 'i-lucide-circle-check', color: 'text-emerald-400' }
+}
+
+export const PROJECT_STATUS_CONFIG: Record<ProjectStatus, { label: string; color: string }> = {
+  active: { label: 'Active', color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' },
+  on_hold: { label: 'On Hold', color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' },
+  completed: { label: 'Completed', color: 'text-blue-500 bg-blue-50 dark:bg-blue-950/40' },
+  archived: { label: 'Archived', color: 'text-zinc-400 bg-zinc-100 dark:bg-zinc-800' }
+}
+
+export const COLOR_TEXT_MAP: Record<ProjectColor, string> = {
+  violet: 'text-violet-500',
+  red: 'text-red-500',
+  orange: 'text-orange-500',
+  amber: 'text-amber-500',
+  yellow: 'text-yellow-500',
+  lime: 'text-lime-500',
+  green: 'text-green-500',
+  emerald: 'text-emerald-500',
+  teal: 'text-teal-500',
+  cyan: 'text-cyan-500',
+  sky: 'text-sky-500',
+  blue: 'text-blue-500',
+  indigo: 'text-indigo-500',
+  purple: 'text-purple-500',
+  fuchsia: 'text-fuchsia-500',
+  pink: 'text-pink-500',
+  rose: 'text-rose-500'
+}
+
 export const PROJECT_ICONS = [
   'i-lucide-folder',
   'i-lucide-folder-kanban',
