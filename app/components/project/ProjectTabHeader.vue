@@ -27,12 +27,12 @@ const route = useRoute()
       </div>
     </div>
 
-    <div class="flex items-center gap-0.5 mt-3">
+    <div class="flex items-center gap-0.5 mt-3 overflow-x-auto scrollbar-none -mx-1 px-1">
       <NuxtLink
         v-for="tab in tabs"
         :key="tab.to"
         :to="tab.to"
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap shrink-0"
         :class="route.path === tab.to
           ? 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400'
           : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'"

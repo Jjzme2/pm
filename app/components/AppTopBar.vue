@@ -3,6 +3,7 @@ const store = useAuthStore()
 const { logout } = useAuth()
 const router = useRouter()
 const timerStore = useTimerStore()
+const sidebar = useSidebar()
 
 async function signOut() {
   await logout()
@@ -11,7 +12,18 @@ async function signOut() {
 </script>
 
 <template>
-  <header class="h-14 shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 gap-4">
+  <header class="h-14 shrink-0 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center px-4 gap-2">
+    <!-- Hamburger (mobile only) -->
+    <UButton
+      class="lg:hidden shrink-0"
+      icon="i-lucide-menu"
+      color="neutral"
+      variant="ghost"
+      size="sm"
+      aria-label="Open menu"
+      @click="sidebar.toggle()"
+    />
+
     <!-- Active timer pill -->
     <div class="flex-1 min-w-0">
       <TimerActivePill v-if="timerStore.active" />
